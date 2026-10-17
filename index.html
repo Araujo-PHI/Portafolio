@@ -4,265 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AraujoXYZ - Portafolio</title>
+    <!-- Fuentes tipográficas modernas UI -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #090d16;
-            --card-bg: #111827;
-            --card-hover: #1f293d;
-            --border-color: #1e293b;
-            --text-white: #f8fafc;
-            --text-gray: #94a3b8;
-            --accent-blue: #2563eb;
-            --accent-green: #10b981;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-drag: none;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-white);
-            font-family: 'Sora', sans-serif;
-            padding-bottom: 60px;
-        }
-
-        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        .hero {
-            padding: 50px 0 35px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .user-name { font-size: 3rem; font-weight: 800; }
-        .user-role { font-size: 1.2rem; color: var(--accent-green); margin-bottom: 24px; font-weight: 600; }
-
-        .card-info {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px 24px;
-            max-width: 700px;
-        }
-
-        .card-info h3 { font-size: 1.15rem; margin-bottom: 6px; }
-        .card-info p { color: var(--text-gray); font-size: 0.95rem; }
-
-        .year-group { margin-top: 50px; }
-        .section-header-row { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-        .section-line-short { width: 32px; height: 2px; background: var(--border-color); }
-        .section-title { font-size: 1.8rem; font-weight: 700; white-space: nowrap; }
-        .section-line-long { flex: 1; height: 2px; background: var(--border-color); }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
-        .project-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .project-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--accent-blue);
-        }
-
-        .preview-container {
-            width: 100%;
-            height: 190px;
-            background: #000;
-            overflow: hidden;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .preview-iframe {
-            width: 200%;
-            height: 200%;
-            border: none;
-            transform: scale(0.5);
-            transform-origin: 0 0;
-            pointer-events: none;
-        }
-
-        .project-details { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
-        .project-date { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 6px; }
-        .project-title { font-size: 1.25rem; margin-bottom: 8px; }
-        .project-desc { font-size: 0.9rem; color: var(--text-gray); margin-bottom: 20px; flex-grow: 1; }
-
-        .btn {
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            background: var(--accent-blue);
-            color: #fff;
-            width: 100%;
-            text-align: center;
-        }
-
-        /* Modal */
-        .modal {
-            display: flex;
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            flex-direction: column;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.35s ease;
-        }
-
-        .modal.active { opacity: 1; visibility: visible; }
-        .modal-header { background: var(--card-bg); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
-        .btn-close { background: var(--accent-blue); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
-        .modal-body { flex-grow: 1; }
-        .modal-body iframe { width: 100%; height: 100%; border: none; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- Encabezado / Perfil -->
     <header class="hero">
         <div class="container">
             <h1 class="user-name">AraujoXYZ</h1>
             <p class="user-role">Bienvenido a mi portafolio :)</p>
-            <div class="card-info">
-                <h3>Un poco de mí</h3>
-                <p>Diseño y desarrollo experiencias web interactivas, aplicaciones y prototipos digitales enfocados en usabilidad y diseño moderno.</p>
+            
+            <div class="about-grid">
+                <div class="card-info">
+                    <h3>Un poco de mí</h3>
+                    <p>Diseño y desarrollo experiencias web interactivas, aplicaciones y prototipos digitales enfocados en usabilidad y diseño moderno.</p>
+                </div>
             </div>
         </div>
     </header>
 
+    <!-- Sección Principal de Proyectos -->
     <main class="container">
+        <!-- El JS cargará y agrupará aquí los proyectos por año -->
         <div id="projects-container">
-            <p style="color: var(--text-gray); margin-top: 40px;">Cargando proyectos desde config.txt...</p>
+            <p class="loading-text">Cargando proyectos desde config.txt...</p>
         </div>
     </main>
 
+    <!-- Modal Flotante con Animación para Previsualización -->
     <div id="project-modal" class="modal">
         <div class="modal-header">
-            <span id="modal-title">Vista del Proyecto</span>
-            <button id="modal-close-btn" class="btn-close" onclick="closeModal()">Cerrar</button>
+            <span id="modal-title" class="modal-title">Vista del Proyecto</span>
+            <div class="modal-actions">
+                <a id="modal-download-btn" href="#" download class="btn-download" style="display: none;">Descargar HTML</a>
+                <button id="modal-close-btn" class="btn-close">Cerrar</button>
+            </div>
         </div>
         <div class="modal-body">
-            <iframe id="modal-iframe" src=""></iframe>
+            <iframe id="modal-iframe" src="" title="Vista previa completa"></iframe>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            fetch('proyectos/config.txt')
-                .then(res => res.text())
-                .then(data => {
-                    const projects = parseConfig(data);
-                    renderProjects(projects);
-                })
-                .catch(err => {
-                    document.getElementById('projects-container').innerHTML = 
-                        '<p style="color: #ef4444; margin-top: 30px;">Recuerda abrir este archivo desde un servidor local (como Live Server en VS Code) para cargar config.txt correctamente.</p>';
-                });
-        });
-
-        function parseConfig(text) {
-            const projects = [];
-            const blocks = text.split(/archivo\s*=\s*/g).filter(b => b.trim() !== '');
-            blocks.forEach(block => {
-                const filePathMatch = block.match(/^([^{\s]+)/);
-                if (!filePathMatch) return;
-                const file = filePathMatch[1].trim();
-                const getProp = (p) => {
-                    const m = block.match(new RegExp(`${p}\\s*=\\s*["']?([^"'\n}]+)["']?`, 'i'));
-                    return m ? m[1].trim() : '';
-                };
-                const fecha = getProp('fecha') || '2026';
-                const yearMatch = fecha.match(/\d{4}/);
-                projects.push({
-                    file,
-                    titulo: getProp('titulo') || 'Sin Título',
-                    descripcion: getProp('descripcion') || '',
-                    fecha,
-                    year: yearMatch ? yearMatch[0] : '2026'
-                });
-            });
-            return projects;
-        }
-
-        function renderProjects(projects) {
-            const container = document.getElementById('projects-container');
-            container.innerHTML = '';
-            
-            const grouped = {};
-            projects.forEach(p => {
-                if (!grouped[p.year]) grouped[p.year] = [];
-                grouped[p.year].push(p);
-            });
-
-            Object.keys(grouped).sort((a,b) => b.localeCompare(a)).forEach(year => {
-                const section = document.createElement('section');
-                section.className = 'year-group';
-                section.innerHTML = `
-                    <div class="section-header-row">
-                        <div class="section-line-short"></div>
-                        <h2 class="section-title">Proyectos ${year}</h2>
-                        <div class="section-line-long"></div>
-                    </div>
-                    <div class="projects-grid" id="grid-${year}"></div>
-                `;
-                container.appendChild(section);
-
-                const grid = document.getElementById(`grid-${year}`);
-                grouped[year].forEach(proj => {
-                    grid.innerHTML += `
-                        <div class="project-card">
-                            <div class="preview-container">
-                                <iframe src="${proj.file}" class="preview-iframe"></iframe>
-                            </div>
-                            <div class="project-details">
-                                <span class="project-date">${proj.fecha}</span>
-                                <h3 class="project-title">${proj.titulo}</h3>
-                                <p class="project-desc">${proj.descripcion}</p>
-                                <button class="btn" onclick="openModal('${proj.file}', '${encodeURIComponent(proj.titulo)}')">Ver Proyecto</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            });
-        }
-
-        function openModal(file, title) {
-            document.getElementById('modal-iframe').src = file;
-            document.getElementById('modal-title').textContent = decodeURIComponent(title);
-            document.getElementById('project-modal').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('modal-iframe').src = '';
-            document.getElementById('project-modal').classList.remove('active');
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
