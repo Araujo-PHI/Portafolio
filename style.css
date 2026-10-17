@@ -291,7 +291,7 @@ h1, h2, h3 {
 }
 
 .btn-close {
-    background: #e53e3e;
+    background: var(--accent-blue);
     color: white;
     border: none;
     padding: 8px 14px;
