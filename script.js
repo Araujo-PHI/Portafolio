@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1. Bloqueo de clic derecho para evitar inspeccionar / copiar
+    // 1. Bloqueo de clic derecho
     document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-    // 2. Bloqueo de atajos de teclado de copia/guardado (Ctrl+C, Ctrl+U, Ctrl+S)
+    // 2. Bloqueo de atajos de teclado de copia/guardado
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && ['c', 'u', 's', 'a', 'p'].includes(e.key.toLowerCase())) {
             e.preventDefault();
         }
     });
 
-    // 3. Cargar proyectos desde "proyectos/config.txt" (según la carpeta de tu captura)
+    // 3. Cargar proyectos desde "proyectos/config.txt"
     fetch('proyectos/config.txt')
         .then(response => {
             if (!response.ok) throw new Error('No se pudo encontrar proyectos/config.txt');
@@ -18,16 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             const projects = parseConfig(data);
-            renderProjects(projects);
+            renderProjectsByYear(projects);
         })
         .catch(err => {
             console.error(err);
             document.getElementById('projects-container').innerHTML = 
-                `<p style="color: #ff5555;">Error al cargar los proyectos. Revisa que el archivo <code>proyectos/config.txt</code> exista.</p>`;
+                `<p style="color: #ef4444; margin-top: 30px;">Error al cargar los proyectos. Revisa que el archivo <code>proyectos/config.txt</code> exista.</p>`;
         });
 });
 
-// Función para parsear el formato en el archivo config.txt
+// Parsea la estructura de config.txt
 function parseConfig(text) {
     const projects = [];
     const blocks = text.split(/archivo\s*=\s*/g).filter(b => b.trim() !== '');
@@ -46,54 +46,83 @@ function parseConfig(text) {
 
         const titulo = getProp('titulo') || 'Proyecto Sin Título';
         const descripcion = getProp('descripcion') || 'Sin descripción disponible.';
-        const fecha = getProp('fecha') || '2026';
+        const fecha = getProp('fecha') || '01/01/2026';
         const descargable = getProp('descargable').toLowerCase() === 'true';
         const abrirHTML = getProp('abrirHTML').toLowerCase() === 'true';
 
-        projects.push({ file, titulo, descripcion, fecha, descargable, abrirHTML });
+        // Extraer año de la fecha (ej: "15/10/2026" -> "2026")
+        const yearMatch = fecha.match(/\d{4}/);
+        const year = yearMatch ? yearMatch[0] : 'Otros';
+
+        projects.push({ file, titulo, descripcion, fecha, year, descargable, abrirHTML });
     });
 
     return projects;
 }
 
-// Función para renderizar las tarjetas de los proyectos
-function renderProjects(projects) {
+// Renderiza proyectos agrupados por Año (Ej: Proyectos 2026, Proyectos 2025)
+function renderProjectsByYear(projects) {
     const container = document.getElementById('projects-container');
     container.innerHTML = '';
 
     if (projects.length === 0) {
-        container.innerHTML = '<p>No se encontraron proyectos configurados.</p>';
+        container.innerHTML = '<p class="loading-text">No hay proyectos para mostrar.</p>';
         return;
     }
 
-    projects.forEach(proj => {
-        const card = document.createElement('div');
-        card.className = 'project-card';
+    // Agrupar por año
+    const grouped = {};
+    projects.forEach(p => {
+        if (!grouped[p.year]) grouped[p.year] = [];
+        grouped[p.year].push(p);
+    });
 
-        card.innerHTML = `
-            <div class="preview-container">
-                <iframe src="${proj.file}" class="preview-iframe" loading="lazy" tabindex="-1"></iframe>
-            </div>
-            <div class="project-details">
-                <span class="project-date">${proj.fecha}</span>
-                <h3 class="project-title">${proj.titulo}</h3>
-                <p class="project-desc">${proj.descripcion}</p>
-                <div class="project-actions">
-                    ${proj.abrirHTML 
-                        ? `<button class="btn btn-open" onclick="openModal('${proj.file}', '${encodeURIComponent(proj.titulo)}',${proj.descargable})">Ver Proyecto</button>` 
-                        : ''}
-                    ${proj.descargable 
-                        ? `<a href="${proj.file}" download class="btn btn-download-icon" title="Descargar HTML">⬇</a>` 
-                        : ''}
+    // Ordenar años de forma descendente (2026, 2025...)
+    const sortedYears = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+
+    sortedYears.forEach(year => {
+        const yearSection = document.createElement('section');
+        yearSection.className = 'year-group';
+
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = `Proyectos ${year}`;
+        yearSection.appendChild(title);
+
+        const grid = document.createElement('div');
+        grid.className = 'projects-grid';
+
+        grouped[year].forEach(proj => {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+
+            card.innerHTML = `
+                <div class="preview-container">
+                    <iframe src="${proj.file}" class="preview-iframe" loading="lazy" tabindex="-1"></iframe>
                 </div>
-            </div>
-        `;
+                <div class="project-details">
+                    <span class="project-date">${proj.fecha}</span>
+                    <h3 class="project-title">${proj.titulo}</h3>
+                    <p class="project-desc">${proj.descripcion}</p>
+                    <div class="project-actions">
+                        ${proj.abrirHTML 
+                            ? `<button class="btn btn-open" onclick="openModal('${proj.file}', '${encodeURIComponent(proj.titulo)}',${proj.descargable})">Ver Proyecto</button>` 
+                            : ''}
+                        ${proj.descargable 
+                            ? `<a href="${proj.file}" download class="btn btn-download-icon" title="Descargar HTML">⬇</a>` 
+                            : ''}
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
 
-        container.appendChild(card);
+        yearSection.appendChild(grid);
+        container.appendChild(yearSection);
     });
 }
 
-// Funciones para el Modal (Vista completa del archivo HTML)
+// Control de Modal / Vista Completa
 function openModal(filePath, title, isDownloadable) {
     const modal = document.getElementById('project-modal');
     const iframe = document.getElementById('modal-iframe');
@@ -111,7 +140,7 @@ function openModal(filePath, title, isDownloadable) {
     }
 
     modal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Bloquea el scroll del fondo
+    document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
@@ -119,7 +148,7 @@ function closeModal() {
     const iframe = document.getElementById('modal-iframe');
     iframe.src = '';
     modal.classList.remove('active');
-    document.body.style.overflow = 'auto'; // Restaura el scroll
+    document.body.style.overflow = 'auto';
 }
 
 document.getElementById('modal-close-btn').addEventListener('click', closeModal);
