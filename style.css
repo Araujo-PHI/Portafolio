@@ -4,7 +4,6 @@
     --card-bg: #111827;
     --card-hover: #1f293d;
     --border-color: #1e293b;
-    --border-hover: #3b82f6;
     --text-white: #f8fafc;
     --text-gray: #94a3b8;
     --accent-blue: #2563eb;
@@ -32,7 +31,7 @@
     background: var(--accent-blue);
 }
 
-/* Bloqueo de selección y arrastre */
+/* Bloqueo de selección y arrastre profesional */
 * {
     margin: 0;
     padding: 0;
@@ -181,7 +180,7 @@ h1, h2, h3 {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Vista previa */
+/* Vista previa del HTML dentro de la tarjeta */
 .preview-container {
     width: 100%;
     height: 190px;
@@ -337,6 +336,7 @@ h1, h2, h3 {
     background: var(--accent-green-hover);
 }
 
+/* Botón Cerrar Azul */
 .btn-close {
     background: var(--accent-blue);
     color: #fff;
