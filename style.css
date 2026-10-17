@@ -93,7 +93,7 @@ h1, h2, h3 {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 14px;
-    padding: 20px 24px;
+    padding: 20px 34px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
