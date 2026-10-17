@@ -69,7 +69,7 @@ h1, h2, h3 {
 
 .user-role {
     font-size: 1.2rem;
-    color: var(--accent-blue);
+    color: var(--accent-green);
     margin-bottom: 30px;
     font-weight: 600;
 }
