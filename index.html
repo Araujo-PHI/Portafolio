@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portafolio Web</title>
+    <!-- Fuentes tipográficas profesionales -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+    <!-- Encabezado / Perfil -->
+    <header class="hero">
+        <div class="container">
+            <span class="badge">Portafolio Personal</span>
+            <h1 class="user-name">[Tu Nombre Aquí]</h1>
+            <p class="user-role">Desarrollador & Creador de Proyectos</p>
+            
+            <div class="about-grid">
+                <div class="card-info">
+                    <h3>💡 ¿Qué hago?</h3>
+                    <p>Diseño y desarrollo experiencias web interactivas, aplicaciones y prototipos digitales enfocados en usabilidad y diseño moderno.</p>
+                </div>
+                <div class="card-info">
+                    <h3>❤️ ¿Qué me gusta?</h3>
+                    <p>Apasionado por la tecnología, el diseño de interfaces, la programación creativa y la exploración de nuevas herramientas web.</p>
+                </div>
+                <div class="card-info">
+                    <h3>🚀 ¿En qué estoy metido?</h3>
+                    <p>Actualmente creando nuevos proyectos web en HTML/JS, explorando conceptos interactivos y perfeccionando mis habilidades.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección de Proyectos -->
+    <main class="container">
+        <section class="projects-section">
+            <div class="section-header">
+                <h2>Mis Proyectos</h2>
+                <span class="year-tag">Año 2026</span>
+            </div>
+
+            <!-- Contenedor donde JS cargará los proyectos dinámicamente -->
+            <div id="projects-container" class="projects-grid">
+                <p class="loading-text">Cargando proyectos desde config.txt...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal / Pestaña Flotante para Previsualización Completa -->
+    <div id="project-modal" class="modal">
+        <div class="modal-header">
+            <span id="modal-title" class="modal-title">Vista del Proyecto</span>
+            <div class="modal-actions">
+                <a id="modal-download-btn" href="#" download class="btn-download" style="display: none;">⬇ Descargar HTML</a>
+                <button id="modal-close-btn" class="btn-close">✕ Cerrar</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <iframe id="modal-iframe" src="" title="Vista previa completa"></iframe>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
