@@ -1,1 +1,7 @@
-
+archivo = proyectos/proyecto1.html {
+titulo = "Mi Primer Proyecto"
+descripcion = "Esta es la descripción detallada del proyecto en HTML."
+fecha = "15/10/2026"
+descargable = true
+abrirHTML = true
+}
