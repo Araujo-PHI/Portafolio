@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Bloqueo de clic derecho
     document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-    // 2. Bloqueo de atajos de teclado de copia/guardado
+    // 2. Bloqueo de atajos de teclado
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && ['c', 'u', 's', 'a', 'p'].includes(e.key.toLowerCase())) {
             e.preventDefault();
@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
-// Parsea la estructura de config.txt
 function parseConfig(text) {
     const projects = [];
     const blocks = text.split(/archivo\s*=\s*/g).filter(b => b.trim() !== '');
@@ -50,7 +49,6 @@ function parseConfig(text) {
         const descargable = getProp('descargable').toLowerCase() === 'true';
         const abrirHTML = getProp('abrirHTML').toLowerCase() === 'true';
 
-        // Extraer año de la fecha (ej: "15/10/2026" -> "2026")
         const yearMatch = fecha.match(/\d{4}/);
         const year = yearMatch ? yearMatch[0] : 'Otros';
 
@@ -60,7 +58,6 @@ function parseConfig(text) {
     return projects;
 }
 
-// Renderiza proyectos agrupados por Año (Ej: Proyectos 2026, Proyectos 2025)
 function renderProjectsByYear(projects) {
     const container = document.getElementById('projects-container');
     container.innerHTML = '';
@@ -70,24 +67,32 @@ function renderProjectsByYear(projects) {
         return;
     }
 
-    // Agrupar por año
     const grouped = {};
     projects.forEach(p => {
         if (!grouped[p.year]) grouped[p.year] = [];
         grouped[p.year].push(p);
     });
 
-    // Ordenar años de forma descendente (2026, 2025...)
     const sortedYears = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
 
     sortedYears.forEach(year => {
         const yearSection = document.createElement('section');
         yearSection.className = 'year-group';
 
+        // Estructura separada para el título y la línea horizontal
+        const headerRow = document.createElement('div');
+        headerRow.className = 'section-header-row';
+
         const title = document.createElement('h2');
         title.className = 'section-title';
         title.textContent = `Proyectos ${year}`;
-        yearSection.appendChild(title);
+
+        const line = document.createElement('div');
+        line.className = 'section-line';
+
+        headerRow.appendChild(title);
+        headerRow.appendChild(line);
+        yearSection.appendChild(headerRow);
 
         const grid = document.createElement('div');
         grid.className = 'projects-grid';
@@ -122,7 +127,6 @@ function renderProjectsByYear(projects) {
     });
 }
 
-// Control de Modal / Vista Completa
 function openModal(filePath, title, isDownloadable) {
     const modal = document.getElementById('project-modal');
     const iframe = document.getElementById('modal-iframe');
