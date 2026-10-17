@@ -301,7 +301,7 @@ h1, h2, h3 {
 }
 
 .btn-close:hover {
-    background: #c53030;
+    background: var(--accent-blue);
 }
 
 .modal-body {
