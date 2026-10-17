@@ -1,1 +1,318 @@
+/* Variables de Color (Negro, Blanco, Azul, Verde) */
+:root {
+    --bg-dark: #0a0e17;
+    --card-bg: #131b2e;
+    --border-color: #1e2d4a;
+    --text-white: #ffffff;
+    --text-gray: #a0aec0;
+    --accent-blue: #0075ff;
+    --accent-green: #00e676;
+    --green-glow: rgba(0, 230, 118, 0.2);
+    --blue-glow: rgba(0, 117, 255, 0.2);
+}
 
+/* Bloqueo de selección y arrastre profesional */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE/Edge */
+    user-select: none; /* Bloquea la selección de texto */
+    -webkit-user-drag: none; /* Bloquea el arrastre de imágenes */
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+h1, h2, h3 {
+    font-family: 'Outfit', sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header & Hero */
+.hero {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border-color);
+    background: radial-gradient(circle at top right, rgba(0, 117, 255, 0.1), transparent 50%),
+                radial-gradient(circle at top left, rgba(0, 230, 118, 0.08), transparent 50%);
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(0, 230, 118, 0.15);
+    color: var(--accent-green);
+    border: 1px solid var(--accent-green);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.user-name {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--text-white);
+}
+
+.user-role {
+    font-size: 1.2rem;
+    color: var(--accent-blue);
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.card-info {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.card-info:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent-blue);
+}
+
+.card-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: var(--accent-green);
+}
+
+.card-info p {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+}
+
+/* Sección de Proyectos */
+.projects-section {
+    margin-top: 50px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.section-header h2 {
+    font-size: 2rem;
+}
+
+.year-tag {
+    background: var(--accent-blue);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.loading-text {
+    color: var(--text-gray);
+    grid-column: 1 / -1;
+}
+
+/* Ficha de Proyecto */
+.project-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-green);
+    box-shadow: 0 10px 25px var(--green-glow);
+}
+
+/* Vista previa del HTML */
+.preview-container {
+    width: 100%;
+    height: 180px;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.preview-iframe {
+    width: 200%;
+    height: 200%;
+    border: none;
+    transform: scale(0.5);
+    transform-origin: 0 0;
+    pointer-events: none; /* Desactiva interacción dentro de la tarjeta */
+}
+
+.project-details {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.project-date {
+    font-size: 0.8rem;
+    color: var(--accent-green);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.project-title {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    color: var(--text-white);
+}
+
+.project-desc {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.project-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-open {
+    background: var(--accent-blue);
+    color: #fff;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.btn-open:hover {
+    background: #0056cc;
+}
+
+.btn-download-icon {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-white);
+    border: 1px solid var(--border-color);
+}
+
+.btn-download-icon:hover {
+    background: var(--accent-green);
+    color: #000;
+    border-color: var(--accent-green);
+}
+
+/* Modal Ventana Completa */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    flex-direction: column;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-header {
+    background: var(--card-bg);
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--accent-green);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-download {
+    background: var(--accent-green);
+    color: #000;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.btn-close {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-close:hover {
+    background: #c53030;
+}
+
+.modal-body {
+    flex-grow: 1;
+    width: 100%;
+    height: calc(100vh - 65px);
+}
+
+.modal-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #fff;
+}
