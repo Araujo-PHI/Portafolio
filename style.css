@@ -176,9 +176,9 @@ h1, h2, h3 {
 
 .project-card:hover {
     transform: translateY(-6px);
-    border-color: var(--accent-blue);
+    border-color: #334155; /* Borde sutil sin azul */
     background-color: var(--card-hover);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5); /* Sombra neutra sin brillo azul */
 }
 
 /* Vista previa del HTML dentro de la tarjeta */
