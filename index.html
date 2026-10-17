@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Portafolio Web</title>
-    <!-- Fuentes tipográficas profesionales -->
+    <title>AraujoXYZ - Portafolio</title>
+    <!-- Fuentes tipográficas de alta calidad -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,32 +15,24 @@
     <!-- Encabezado / Perfil -->
     <header class="hero">
         <div class="container">
-            <span class="badge">Portafolio Personal</span>
             <h1 class="user-name">AraujoXYZ</h1>
             <p class="user-role">Bienvenido a mi portafolio :)</p>
             
             <div class="about-grid">
                 <div class="card-info">
-                    <h3>Un poco de mi</h3>
+                    <h3>Un poco de mí</h3>
                     <p>Diseño y desarrollo experiencias web interactivas, aplicaciones y prototipos digitales enfocados en usabilidad y diseño moderno.</p>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Sección de Proyectos -->
+    <!-- Sección Principal de Proyectos -->
     <main class="container">
-        <section class="projects-section">
-            <div class="section-header">
-                <h2>Proyectos</h2>
-                <span class="year-tag">2026</span>
-            </div>
-
-            <!-- Contenedor donde JS cargará los proyectos dinámicamente -->
-            <div id="projects-container" class="projects-grid">
-                <p class="loading-text">Cargando proyectos desde config.txt...</p>
-            </div>
-        </section>
+        <!-- JS generará aquí las secciones agrupadas por año (ej: Proyectos 2026, Proyectos 2025, etc.) -->
+        <div id="projects-container">
+            <p class="loading-text">Cargando proyectos desde config.txt...</p>
+        </div>
     </main>
 
     <!-- Modal / Pestaña Flotante para Previsualización Completa -->
