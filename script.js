@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Bloqueo de clic derecho
     document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-    // 2. Bloqueo de atajos de teclado para evitar copiar/guardar
+    // 2. Bloqueo de atajos de teclado para evitar copiar o inspeccionar
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && ['c', 'u', 's', 'a', 'p'].includes(e.key.toLowerCase())) {
             e.preventDefault();
@@ -23,11 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(err => {
             console.error(err);
             document.getElementById('projects-container').innerHTML = 
-                `<p style="color: #ef4444; margin-top: 30px;">Error al cargar los proyectos. Revisa que el archivo <code>proyectos/config.txt</code> exista.</p>`;
+                `<p style="color: #ef4444; margin-top: 30px;">Error al cargar los proyectos. Abre esta página desde un servidor local (Live Server en VS Code) para que se lea <code>proyectos/config.txt</code>.</p>`;
         });
 });
 
-// Función para parsear el archivo config.txt
+// Función para procesar el formato de proyectos/config.txt
 function parseConfig(text) {
     const projects = [];
     const blocks = text.split(/archivo\s*=\s*/g).filter(b => b.trim() !== '');
@@ -50,7 +50,7 @@ function parseConfig(text) {
         const descargable = getProp('descargable').toLowerCase() === 'true';
         const abrirHTML = getProp('abrirHTML').toLowerCase() === 'true';
 
-        // Extraer el año de la fecha
+        // Extrae el año de la fecha definida
         const yearMatch = fecha.match(/\d{4}/);
         const year = yearMatch ? yearMatch[0] : 'Otros';
 
@@ -60,7 +60,7 @@ function parseConfig(text) {
     return projects;
 }
 
-// Función para renderizar los proyectos agrupados por año
+// Renderiza las secciones agrupadas por año con la línea corta y larga
 function renderProjectsByYear(projects) {
     const container = document.getElementById('projects-container');
     container.innerHTML = '';
@@ -76,7 +76,7 @@ function renderProjectsByYear(projects) {
         grouped[p.year].push(p);
     });
 
-    // Ordenar años de forma descendente (ej: 2026, 2025...)
+    // Ordena años del más reciente al más antiguo
     const sortedYears = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
 
     sortedYears.forEach(year => {
@@ -135,7 +135,7 @@ function renderProjectsByYear(projects) {
     });
 }
 
-// Control del Modal / Vista Flotante con animación
+// Modal Flotante
 function openModal(filePath, title, isDownloadable) {
     const modal = document.getElementById('project-modal');
     const iframe = document.getElementById('modal-iframe');
