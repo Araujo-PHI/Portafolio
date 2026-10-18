@@ -3,51 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AraujoXYZ - Portafolio</title>
-    <!-- Fuentes tipográficas modernas UI -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <title>Perfil Profesional</title>
+    <!-- Enlace a los estilos CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- Iconos de FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- Encabezado / Perfil -->
-    <header class="hero">
-        <div class="container">
-            <h1 class="user-name">AraujoPHI</h1>
-            
-            <div class="about-grid">
-                <div class="card-info">
-                    <h3>Un poco de mí</h3>
-                    <p>Diseño y desarrollo experiencias web interactivas, aplicaciones y prototipos digitales enfocados en usabilidad y diseño moderno.</p>
+    <div class="window-container">
+        <!-- Barra superior estilo ventana -->
+        <div class="window-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+        </div>
+
+        <main class="profile-container">
+            <!-- Header / Perfil -->
+            <section class="profile-header">
+                <div class="avatar-container">
+                    <div class="avatar-placeholder">R</div>
                 </div>
-            </div>
-        </div>
-    </header>
+                <div class="profile-info">
+                    <h1>Nombre</h1>
+                    <p class="subtitle">Habilidad principal</p>
+                    <p class="location"><i class="fa-solid fa-location-dot"></i> Localización</p>
+                    <div class="social-buttons">
+                        <a href="mailto:email@email.com" class="btn-primary"><i class="fa-solid fa-envelope"></i> email@email.com</a>
+                        <a href="#" class="btn-icon"><i class="fa-solid fa-file-lines"></i></a>
+                        <a href="#" class="btn-icon"><i class="fa-brands fa-github"></i></a>
+                        <a href="#" class="btn-icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </section>
 
-    <!-- Sección Principal de Proyectos -->
-    <main class="container">
-        <!-- El JS cargará y agrupará aquí los proyectos por año -->
-        <div id="projects-container">
-            <p class="loading-text">Cargando proyectos desde config.txt...</p>
-        </div>
-    </main>
+            <!-- Sobre mí -->
+            <section class="section">
+                <h2>Sobre mí</h2>
+                <p class="description-text">Descripción breve sobre ti, tus pasiones y enfoque profesional.</p>
+            </section>
 
-    <!-- Modal Flotante con Animación para Previsualización -->
-    <div id="project-modal" class="modal">
-        <div class="modal-header">
-            <span id="modal-title" class="modal-title">Vista del Proyecto</span>
-            <div class="modal-actions">
-                <a id="modal-download-btn" href="#" download class="btn-download" style="display: none;">Descargar HTML</a>
-                <button id="modal-close-btn" class="btn-close">Cerrar</button>
-            </div>
-        </div>
-        <div class="modal-body">
-            <iframe id="modal-iframe" src="" title="Vista previa completa"></iframe>
-        </div>
+            <!-- Tecnologías -->
+            <section class="section">
+                <h2>Tecnologías</h2>
+                <div class="tech-tags">
+                    <span class="tech-tag"><i class="fa-solid fa-code"></i> Tecnología</span>
+                    <span class="tech-tag"><i class="fa-solid fa-code"></i> Tecnología</span>
+                    <span class="tech-tag"><i class="fa-solid fa-code"></i> Tecnología</span>
+                </div>
+            </section>
+
+            <!-- Experiencia -->
+            <section class="section">
+                <h2>Experiencia</h2>
+                <div class="experience-list">
+                    <div class="item-card">
+                        <div class="item-left">
+                            <div class="item-icon"><i class="fa-solid fa-briefcase"></i></div>
+                            <div>
+                                <h3>Título</h3>
+                                <p class="item-sub">Subtítulo</p>
+                                <p class="item-desc">Descripción</p>
+                            </div>
+                        </div>
+                        <span class="badge-year">Años</span>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-left">
+                            <div class="item-icon"><i class="fa-solid fa-briefcase"></i></div>
+                            <div>
+                                <h3>Título</h3>
+                                <p class="item-sub">Subtítulo</p>
+                                <p class="item-desc">Descripción</p>
+                            </div>
+                        </div>
+                        <span class="badge-year">Años</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Proyectos -->
+            <section class="section">
+                <h2>Proyectos</h2>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-content">
+                            <div class="item-left">
+                                <div class="item-icon"><i class="fa-solid fa-folder"></i></div>
+                                <div>
+                                    <h3>Título</h3>
+                                    <p class="item-sub">Subtítulo</p>
+                                    <p class="item-desc">Descripción</p>
+                                </div>
+                            </div>
+                            <div class="tech-tags small">
+                                <span class="tech-tag"><i class="fa-solid fa-code"></i> Tecnología</span>
+                                <span class="tech-tag"><i class="fa-solid fa-code"></i> Tecnología</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="#" class="btn-icon"><i class="fa-solid fa-link"></i></a>
+                                <a href="#" class="btn-icon"><i class="fa-brands fa-github"></i></a>
+                            </div>
+                        </div>
+                        <div class="project-image-placeholder">R</div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-content">
+                            <div class="item-left">
+                                <div class="item-icon"><i class="fa-solid fa-folder"></i></div>
+                                <div>
+                                    <h3>Título</h3>
+                                    <p class="item-sub">Subtítulo</p>
+                                    <p class="item-desc">Descripción</p>
+                                </div>
+                            </div>
+                            <div class="tech-tags small">
+                                <span class="tech-tag"><i class="fa-solid fa-code"></i> Tecnología</span>
+                                <span class="tech-tag"><i class="fa-solid fa-code"></i> Tecnología</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="#" class="btn-icon"><i class="fa-solid fa-link"></i></a>
+                                <a href="#" class="btn-icon"><i class="fa-brands fa-github"></i></a>
+                            </div>
+                        </div>
+                        <div class="project-image-placeholder">R</div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-content">
+                            <div class="item-left">
+                                <div class="item-icon"><i class="fa-solid fa-folder"></i></div>
+                                <div>
+                                    <h3>Título</h3>
+                                    <p class="item-sub">Subtítulo</p>
+                                    <p class="item-desc">Descripción</p>
+                                </div>
+                            </div>
+                            <div class="tech-tags small">
+                                <span class="tech-tag"><i class="fa-solid fa-code"></i> Tecnología</span>
+                                <span class="tech-tag"><i class="fa-solid fa-code"></i> Tecnología</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="#" class="btn-icon"><i class="fa-solid fa-link"></i></a>
+                                <a href="#" class="btn-icon"><i class="fa-brands fa-github"></i></a>
+                            </div>
+                        </div>
+                        <div class="project-image-placeholder">R</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Formación -->
+            <section class="section">
+                <h2>Formación</h2>
+                <div class="item-card">
+                    <div class="item-left">
+                        <div class="item-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <div>
+                            <h3>Título</h3>
+                            <p class="item-sub">Subtítulo</p>
+                            <p class="item-desc">Descripción</p>
+                        </div>
+                    </div>
+                    <div class="badge-group">
+                        <span class="badge-year">Años</span>
+                        <span class="badge-icon"><i class="fa-solid fa-shield-check"></i></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Extra -->
+            <section class="section">
+                <h2>Extra</h2>
+                <div class="extra-grid">
+                    <div class="extra-card">
+                        <div class="extra-img">R</div>
+                        <div class="extra-info">
+                            <h4>Título</h4>
+                            <p>Descripción</p>
+                        </div>
+                    </div>
+                    <div class="extra-card">
+                        <div class="extra-img">R</div>
+                        <div class="extra-info">
+                            <h4>Título</h4>
+                            <p>Descripción</p>
+                        </div>
+                    </div>
+                    <div class="extra-card">
+                        <div class="extra-img">R</div>
+                        <div class="extra-info">
+                            <h4>Título</h4>
+                            <p>Descripción</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer / Redes inferior -->
+            <footer class="profile-footer">
+                <p>Nombre</p>
+                <div class="social-buttons">
+                    <a href="mailto:email@email.com" class="btn-primary"><i class="fa-solid fa-envelope"></i> email@email.com</a>
+                    <a href="#" class="btn-icon"><i class="fa-solid fa-file-lines"></i></a>
+                    <a href="#" class="btn-icon"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="btn-icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </footer>
+        </main>
     </div>
 
+    <!-- Enlace al archivo JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
