@@ -25,7 +25,6 @@ body {
     min-height: 100vh;
 }
 
-/* Contenedor principal estilo ventana de macOS */
 .window-container {
     width: 100%;
     max-width: 850px;
@@ -59,7 +58,6 @@ body {
     padding: 40px;
 }
 
-/* Secciones generales */
 .section {
     margin-top: 40px;
     border-top: 1px solid var(--border-color);
@@ -73,7 +71,6 @@ body {
     color: var(--text-main);
 }
 
-/* Header del perfil */
 .profile-header {
     display: flex;
     gap: 24px;
@@ -118,7 +115,6 @@ body {
     gap: 6px;
 }
 
-/* Botones de redes y contacto */
 .social-buttons {
     display: flex;
     gap: 10px;
@@ -163,14 +159,12 @@ body {
     background-color: var(--border-color);
 }
 
-/* Sobre mí texto */
 .description-text {
     color: var(--text-muted);
     font-size: 0.95rem;
     line-height: 1.5;
 }
 
-/* Etiquetas de Tecnologías */
 .tech-tags {
     display: flex;
     gap: 10px;
@@ -194,7 +188,6 @@ body {
     gap: 6px;
 }
 
-/* Tarjetas de Experiencia y Formación */
 .experience-list {
     display: flex;
     flex-direction: column;
@@ -271,7 +264,6 @@ body {
     font-size: 1rem;
 }
 
-/* Sección Proyectos (Diseño tipo grilla o tarjeta con imagen lateral) */
 .projects-grid {
     display: flex;
     flex-direction: column;
@@ -317,7 +309,6 @@ body {
     border-left: 1px solid var(--border-color);
 }
 
-/* Sección Extra */
 .extra-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -363,7 +354,6 @@ body {
     margin-top: 4px;
 }
 
-/* Footer inferior */
 .profile-footer {
     margin-top: 40px;
     border-top: 1px solid var(--border-color);
@@ -373,7 +363,6 @@ body {
     align-items: center;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
     .profile-header {
         flex-direction: column;
