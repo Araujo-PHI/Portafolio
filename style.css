@@ -43,7 +43,7 @@ body {
     display: inline-block;
 }
 
-.dot.red { background-color: #ff5f56; }
+.dot.blue { background-color: #ff5f56; }
 .dot.yellow { background-color: #ffbd2e; }
 .dot.green { background-color: #27c93f; }
 
@@ -116,8 +116,8 @@ body {
 
 .btn-icon:hover {
     background-color: #21262d;
-    color: #58a6ff;
-    border-color: #58a6ff;
+    color: #c9d1d9;
+    border-color: #c9d1d9;
     transform: translateY(-2px);
 }
 
