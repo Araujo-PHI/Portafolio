@@ -67,8 +67,6 @@ body {
     height: 96px;
     min-width: 96px;
     border-radius: 50%;
-    overflow: hidden;
-    background-color: #161b22;
     border: 2px solid #30363d;
     display: flex;
     align-items: center;
