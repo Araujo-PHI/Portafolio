@@ -77,7 +77,7 @@ function renderProjects(projects, container) {
                 <article class="project-card">
                     <div class="project-content">
                         <div class="item-left">
-                            <div class="item-icon"><i class="fa-solid fa-folder"></i></div>
+                            <div class="project-letter">${inicial}</div>
                             <div>
                                 <h3>${project.titulo}</h3>
                                 <p class="item-sub">${project.fecha}</p>
