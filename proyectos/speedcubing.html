@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Speedcubing Timer Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bgDark: '#090d16',
+                        cardDark: '#0f172a',
+                        accentSky: '#38bdf8'
+                    },
+                    animation: {
+                        'modal-pop': 'modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-fast': 'pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        modalPop: {
+                            '0%': { opacity: '0', transform: 'scale(0.95) translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'scale(1) translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation;
+            background-color: #090d16;
+            overflow-x: hidden;
+        }
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 6px;
+        }
+        #three-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .glass-panel {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .puzzle-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .puzzle-btn.active {
+            background: #1e293b;
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+        input[type="checkbox"] {
+            accent-color: #38bdf8;
+            cursor: pointer;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%3c38bdf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.6rem center;
+            background-size: 1em;
+            padding-right: 2rem !important;
+        }
+        select option {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-black p-3 sm:p-5">
+
+    <div id="app-content" class="w-full max-w-xl mx-auto flex-grow flex flex-col gap-4">
+
+        <!-- 1. Selección de Puzzles Expandida (Desplazable horizontalmente para acomodar todos) -->
+        <div class="glass-panel rounded-2xl p-1.5 flex items-center gap-1 overflow-x-auto shadow-lg scrollbar-none">
+            <button data-puzzle="2x2" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">2x2</button>
+            <button data-puzzle="3x3" class="puzzle-btn active flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">3x3</button>
+            <button data-puzzle="4x4" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">4x4</button>
+            <button data-puzzle="5x5" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">5x5</button>
+            <button data-puzzle="6x6" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">6x6</button>
+            <button data-puzzle="7x7" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">7x7</button>
+            <button data-puzzle="8x8" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">8x8</button>
+            <button data-puzzle="9x9" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">9x9</button>
+            <button data-puzzle="pyraminx" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">Pyraminx</button>
+            <button data-puzzle="megaminx" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">Megaminx</button>
+            <button data-puzzle="skewb" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">Skewb</button>
+            <button data-puzzle="square1" class="puzzle-btn flex-shrink-0 py-2.5 px-3 rounded-xl text-xs font-extrabold text-slate-400 hover:text-slate-200 border border-transparent active:scale-95">Square-1</button>
+        </div>
+
+        <!-- 2. Barra de Mezcla -->
+        <div id="scramble-bar" class="glass-panel hover:border-sky-500/50 rounded-2xl p-3.5 cursor-pointer transition-all flex items-center justify-between gap-3 group">
+            <div class="flex items-center gap-2.5 flex-grow min-w-0">
+                <span class="text-[10px] font-black text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-1 rounded-lg flex-shrink-0">MEZCLA</span>
+                <div id="scramble-text" class="mono-font text-xs sm:text-sm font-bold text-slate-200 truncate">Generando mezcla...</div>
+            </div>
+            <span class="text-xs text-sky-400 font-semibold flex items-center gap-1 flex-shrink-0" id="view-3d-text">
+                Ver 3D <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </span>
+        </div>
+
+        <!-- 3. Cronómetro Principal -->
+        <div id="section-timer" class="glass-panel hover:border-slate-700 rounded-3xl flex flex-col items-center justify-center p-8 text-center cursor-pointer flex-grow min-h-[280px] sm:min-h-[320px] transition-all relative select-none">
+            <div id="status-badge" class="text-[11px] font-semibold tracking-wider uppercase text-slate-400 bg-slate-900 px-4 py-2 rounded-full border border-slate-800 mb-4 transition-colors">
+                MANTÉN 2 DEDOS (Móvil) O ESPACIO (PC) POR 0.75s Y SUELTA
+            </div>
+
+            <div id="timer-display" class="mono-font text-6xl sm:text-7xl font-black tracking-tight text-slate-100 my-2">
+                00<span class="text-sky-400">:</span>00<span class="text-sky-400">.</span>000
+            </div>
+
+            <button id="start-btn" class="mt-4 bg-sky-500/20 text-sky-400 font-extrabold px-8 py-3 rounded-2xl text-xs transition-all pointer-events-none border border-sky-500/30">
+                Listo para cronometrar
+            </button>
+        </div>
+
+        <!-- 4. Panel de Estadísticas (Mejor, Peor, Promedio) -->
+        <div class="grid grid-cols-3 gap-2.5 text-xs font-mono text-center">
+            <div class="flex flex-col items-center justify-center bg-cardDark border border-slate-800 p-3 rounded-2xl">
+                <span class="text-slate-400 text-[10px] uppercase font-semibold">Mejor</span>
+                <span id="main-best-val" class="text-emerald-400 text-sm font-extrabold mt-1">--</span>
+            </div>
+            <div class="flex flex-col items-center justify-center bg-cardDark border border-slate-800 p-3 rounded-2xl">
+                <span class="text-slate-400 text-[10px] uppercase font-semibold">Peor</span>
+                <span id="main-worst-val" class="text-rose-400 text-sm font-extrabold mt-1">--</span>
+            </div>
+            <div class="flex flex-col items-center justify-center bg-cardDark border border-slate-800 p-3 rounded-2xl">
+                <span class="text-slate-400 text-[10px] uppercase font-semibold">Promedio</span>
+                <span id="main-mean-val" class="text-sky-400 text-sm font-extrabold mt-1">--</span>
+            </div>
+        </div>
+
+        <!-- 5. Botón de Historial -->
+        <button id="btn-open-history" class="w-full glass-panel hover:border-sky-500/50 rounded-2xl py-3.5 px-4 text-xs font-extrabold text-slate-200 hover:text-sky-400 transition-all flex items-center justify-center gap-2">
+            <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            <span>Ver Historial de Tiempos y Estadísticas</span>
+        </button>
+
+    </div>
+
+    <!-- Modales -->
+    <div id="modal-cube" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-cardDark border border-slate-800 rounded-3xl max-w-md w-full p-4 flex flex-col gap-3 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span id="cube-modal-title" class="font-extrabold text-xs text-sky-400 font-mono uppercase">VISOR 3D • 3X3</span>
+                <button id="btn-close-cube-modal" class="text-slate-400 p-1">✕</button>
+            </div>
+            <div id="modal-scramble-display" class="mono-font text-xs font-bold text-slate-200 bg-slate-900 p-2.5 rounded-xl border border-slate-800 text-center">--</div>
+            <div id="cube-container" class="w-full h-60 bg-slate-950 rounded-2xl relative border border-slate-800 flex items-center justify-center">
+                <canvas id="three-canvas"></canvas>
+                <div id="move-indicator" class="absolute top-2 left-2 text-[10px] font-mono text-sky-400 bg-slate-900 px-2 py-1 rounded-lg hidden"></div>
+                <div id="puzzle-badge" class="absolute bottom-2 right-2 text-[10px] font-mono text-sky-400 bg-slate-900 px-2 py-1 rounded-lg">3x3x3</div>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+                <select id="select-speed" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs font-mono rounded-xl px-2 py-2">
+                    <option value="1000">1s / mov</option>
+                    <option value="2000">2s / mov</option>
+                    <option value="3000">3s / mov</option>
+                </select>
+                <div class="flex gap-2">
+                    <button id="btn-play-scramble" class="px-3 py-2 bg-sky-500 text-slate-950 rounded-xl text-xs font-extrabold"><span id="icon-play">▶</span> Reproducir</button>
+                    <button id="btn-next-scramble" class="px-3 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl text-xs font-extrabold">↻ Nueva</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-history" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-cardDark border border-slate-800 rounded-3xl max-w-lg w-full max-h-[85vh] p-4 flex flex-col gap-3 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="chk-select-all" class="w-4 h-4 rounded border-slate-700">
+                    <span class="font-extrabold text-xs text-slate-100">Historial <span id="history-puzzle-label" class="text-sky-400 font-mono">(3x3)</span></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="btn-export-full" disabled class="px-2.5 py-1 bg-sky-500/10 border border-sky-500/30 text-sky-400 disabled:opacity-30 rounded-xl text-xs font-bold">Reporte</button>
+                    <button id="btn-clear" class="px-2.5 py-1 bg-slate-900 text-rose-400 rounded-xl text-xs font-bold border border-slate-800">Limpiar</button>
+                    <button id="btn-close-history-modal" class="text-slate-400 p-1">✕</button>
+                </div>
+            </div>
+            <div id="history-container" class="flex-grow overflow-y-auto divide-y divide-slate-800/40 my-1 text-xs pr-1 min-h-[180px] max-h-[40vh]">
+                <div id="empty-msg" class="py-12 text-center text-slate-500 text-xs">No hay tiempos guardados.</div>
+            </div>
+            <div class="pt-2 border-t border-slate-800 grid grid-cols-4 gap-1.5 text-xs font-mono text-center">
+                <div class="bg-slate-900 border border-slate-800 p-2 rounded-xl"><span class="text-slate-400 text-[8px] block">Solves</span><span id="count-val" class="text-slate-200 font-bold">0</span></div>
+                <div class="bg-slate-900 border border-slate-800 p-2 rounded-xl"><span class="text-slate-400 text-[8px] block">Mejor</span><span id="best-val" class="text-emerald-400 font-bold">--</span></div>
+                <div class="bg-slate-900 border border-slate-800 p-2 rounded-xl"><span class="text-slate-400 text-[8px] block">Peor</span><span id="worst-val" class="text-rose-400 font-bold">--</span></div>
+                <div class="bg-slate-900 border border-slate-800 p-2 rounded-xl"><span class="text-slate-400 text-[8px] block">Prom</span><span id="mean-val" class="text-sky-400 font-bold">--</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="export-modal" class="fixed inset-0 bg-black/90 z-[60] flex items-center justify-center p-4 hidden">
+        <div class="bg-cardDark border border-slate-800 rounded-3xl max-w-lg w-full max-h-[90vh] p-4 flex flex-col gap-3 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <h3 id="modal-title" class="font-extrabold text-xs text-slate-200 uppercase">REPORTE</h3>
+                <button id="btn-close-modal" class="text-slate-400">✕</button>
+            </div>
+            <div class="bg-bgDark p-2 rounded-2xl flex items-center justify-center border border-slate-800 overflow-auto flex-grow max-h-[65vh]">
+                <img id="modal-img-preview" src="" alt="Reporte" class="rounded-xl w-full object-contain">
+            </div>
+            <div class="flex justify-end gap-2">
+                <button id="btn-share-report" class="px-4 py-2 bg-slate-800 text-sky-400 font-extrabold rounded-xl text-xs">Compartir</button>
+                <a id="btn-download-link" download="reporte-speedcubing.png" class="px-4 py-2 bg-sky-500 text-slate-950 font-extrabold rounded-xl text-xs text-center">Descargar PNG</a>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="canvas-export" class="hidden"></canvas>
+
+    <script>
+        let currentPuzzle = '3x3';
+        let timerState = 'IDLE'; 
+        let startTime = 0;
+        let timerLoop = null;
+        let holdTimeout = null;
+        let currentScramble = '';
+        let solvesHistory = {}; 
+        let selectedSolveIds = new Set();
+
+        const scrambleText = document.getElementById('scramble-text');
+        const timerDisplay = document.getElementById('timer-display');
+        const statusBadge = document.getElementById('status-badge');
+        const startBtn = document.getElementById('start-btn');
+        const btnNextScramble = document.getElementById('btn-next-scramble');
+        const btnPlayScramble = document.getElementById('btn-play-scramble');
+        const iconPlay = document.getElementById('icon-play');
+        const selectSpeed = document.getElementById('select-speed');
+        const moveIndicator = document.getElementById('move-indicator');
+        const puzzleBadge = document.getElementById('puzzle-badge');
+        const historyContainer = document.getElementById('history-container');
+        const emptyMsg = document.getElementById('empty-msg');
+        const historyPuzzleLabel = document.getElementById('history-puzzle-label');
+        const countVal = document.getElementById('count-val');
+        const bestVal = document.getElementById('best-val');
+        const worstVal = document.getElementById('worst-val');
+        const meanVal = document.getElementById('mean-val');
+        
+        const mainBestVal = document.getElementById('main-best-val');
+        const mainWorstVal = document.getElementById('main-worst-val');
+        const mainMeanVal = document.getElementById('main-mean-val');
+
+        const btnExportFull = document.getElementById('btn-export-full');
+        const btnClear = document.getElementById('btn-clear');
+        const chkSelectAll = document.getElementById('chk-select-all');
+        const selectedCountBadge = document.getElementById('selected-count-badge');
+
+        const scrambleBar = document.getElementById('scramble-bar');
+        const view3dText = document.getElementById('view-3d-text');
+        const modalCube = document.getElementById('modal-cube');
+        const btnCloseCubeModal = document.getElementById('btn-close-cube-modal');
+        const cubeModalTitle = document.getElementById('cube-modal-title');
+        const modalScrambleDisplay = document.getElementById('modal-scramble-display');
+
+        const btnOpenHistory = document.getElementById('btn-open-history');
+        const modalHistory = document.getElementById('modal-history');
+        const btnCloseHistoryModal = document.getElementById('btn-close-history-modal');
+
+        const exportModal = document.getElementById('export-modal');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+        const modalImgPreview = document.getElementById('modal-img-preview');
+        const btnDownloadLink = document.getElementById('btn-download-link');
+        const btnShareReport = document.getElementById('btn-share-report');
+        const modalTitle = document.getElementById('modal-title');
+
+        let scene, camera, renderer, puzzleGroup;
+        let cubies = [];
+
+        const COLOR_MAP = {
+            R: 0xdc2626, L: 0xea580c, U: 0xf8fafc, D: 0xfacc15, F: 0x16a34a, B: 0x2563eb, INNER: 0x090d16
+        };
+
+        function init3D() {
+            const container = document.getElementById('cube-container');
+            const canvas = document.getElementById('three-canvas');
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(4.2, 3.8, 5.2);
+            camera.lookAt(0, 0, 0);
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.85));
+            const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight1.position.set(10, 15, 10);
+            scene.add(dirLight1);
+
+            puzzleGroup = new THREE.Group();
+            scene.add(puzzleGroup);
+            buildPuzzle3D();
+            animate3DLoop();
+            window.addEventListener('resize', onWindowResize3D);
+        }
+
+        function buildPuzzle3D() {
+            while (puzzleGroup.children.length > 0) {
+                puzzleGroup.remove(puzzleGroup.children[0]);
+            }
+            puzzleGroup.rotation.set(0, 0, 0);
+            cubies = [];
+
+            let N = 3;
+            if (currentPuzzle === '2x2') N = 2;
+            else if (currentPuzzle === '4x4') N = 4;
+            else if (currentPuzzle === '5x5') N = 5;
+            else if (currentPuzzle === '6x6') N = 6;
+            else if (currentPuzzle === '7x7') N = 7;
+            else if (currentPuzzle === '8x8') N = 8;
+            else if (currentPuzzle === '9x9') N = 9;
+            else {
+                // Para puzzles no cúbicos directos mostramos un 3x3 por defecto en el visor 3D
+                N = 3;
+            }
+
+            const totalWidth = 2.5;
+            const cubeSize = (totalWidth / N) * 0.92;
+            const gap = (totalWidth / N) * 0.08;
+            const step = cubeSize + gap;
+            const offset = ((N - 1) * step) / 2;
+            const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+
+            for (let x = 0; x < N; x++) {
+                for (let y = 0; y < N; y++) {
+                    for (let z = 0; z < N; z++) {
+                        const materials = [
+                            new THREE.MeshLambertMaterial({ color: x === N - 1 ? COLOR_MAP.R : COLOR_MAP.INNER }),
+                            new THREE.MeshLambertMaterial({ color: x === 0 ? COLOR_MAP.L : COLOR_MAP.INNER }),
+                            new THREE.MeshLambertMaterial({ color: y === N - 1 ? COLOR_MAP.U : COLOR_MAP.INNER }),
+                            new THREE.MeshLambertMaterial({ color: y === 0 ? COLOR_MAP.D : COLOR_MAP.INNER }),
+                            new THREE.MeshLambertMaterial({ color: z === N - 1 ? COLOR_MAP.F : COLOR_MAP.INNER }),
+                            new THREE.MeshLambertMaterial({ color: z === 0 ? COLOR_MAP.B : COLOR_MAP.INNER })
+                        ];
+                        const cubie = new THREE.Mesh(geometry, materials);
+                        cubie.position.set(x * step - offset, y * step - offset, z * step - offset);
+                        cubie.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry), new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 })));
+                        puzzleGroup.add(cubie);
+                        cubies.push(cubie);
+                    }
+                }
+            }
+        }
+
+        function onWindowResize3D() {
+            const container = document.getElementById('cube-container');
+            if (!container || !renderer || !camera) return;
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function animate3DLoop() {
+            requestAnimationFrame(animate3DLoop);
+            if (renderer && scene && camera) renderer.render(scene, camera);
+        }
+
+        function animateMove3D(moveStr, duration, onComplete) {
+            let N = 3;
+            if (currentPuzzle === '2x2') N = 2;
+            else if (currentPuzzle === '4x4') N = 4;
+            else if (currentPuzzle === '5x5') N = 5;
+            else if (currentPuzzle === '6x6') N = 6;
+            else if (currentPuzzle === '7x7') N = 7;
+            else if (currentPuzzle === '8x8') N = 8;
+            else if (currentPuzzle === '9x9') N = 9;
+
+            const face = moveStr[0];
+            const mod = moveStr.slice(1);
+            let targetAngle = -Math.PI / 2;
+            if (mod === "'") targetAngle = Math.PI / 2;
+            if (mod === "2") targetAngle = -Math.PI;
+
+            const axisMap = {
+                'R': new THREE.Vector3(1, 0, 0), 'L': new THREE.Vector3(-1, 0, 0),
+                'U': new THREE.Vector3(0, 1, 0), 'D': new THREE.Vector3(0, -1, 0),
+                'F': new THREE.Vector3(0, 0, 1), 'B': new THREE.Vector3(0, 0, -1)
+            };
+            const axis = axisMap[face];
+            if (!axis) { if (onComplete) onComplete(); return; }
+            if (face === 'R' || face === 'U' || face === 'F') targetAngle = -targetAngle;
+
+            const threshold = (2.5 / N) * 0.38;
+            const pivot = new THREE.Group();
+            scene.add(pivot);
+
+            const affectedCubies = cubies.filter(c => {
+                const pos = c.position;
+                if (face === 'R') return pos.x > threshold;
+                if (face === 'L') return pos.x < -threshold;
+                if (face === 'U') return pos.y > threshold;
+                if (face === 'D') return pos.y < -threshold;
+                if (face === 'F') return pos.z > threshold;
+                if (face === 'B') return pos.z < -threshold;
+                return false;
+            });
+            affectedCubies.forEach(c => pivot.add(c));
+
+            let currentAngle = 0;
+            const startTimeAnim = performance.now();
+            function frameAnim(now) {
+                const elapsed = now - startTimeAnim;
+                const progress = Math.min(elapsed / duration, 1.0);
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                const angleStep = targetAngle * easedProgress - currentAngle;
+                pivot.rotateOnAxis(axis, angleStep);
+                currentAngle = targetAngle * easedProgress;
+                if (progress < 1.0) {
+                    requestAnimationFrame(frameAnim);
+                } else {
+                    pivot.updateMatrixWorld(true);
+                    affectedCubies.forEach(c => { c.applyMatrix4(pivot.matrix); puzzleGroup.add(c); });
+                    scene.remove(pivot);
+                    if (onComplete) onComplete();
+                }
+            }
+            requestAnimationFrame(frameAnim);
+        }
+
+        function generateScramble(puzzle) {
+            const modifiers = ['', "'", '2'];
+            
+            if (puzzle === '2x2') {
+                const faces = ['R', 'U', 'F'];
+                let res = [], last = '';
+                for (let i = 0; i < 9; i++) {
+                    let chosen; do { chosen = faces[Math.floor(Math.random() * faces.length)]; } while (chosen === last);
+                    last = chosen; res.push(chosen + modifiers[Math.floor(Math.random() * modifiers.length)]);
+                }
+                return res.join(' ');
+            }
+            if (puzzle === '3x3') {
+                const faces = ['U', 'D', 'L', 'R', 'F', 'B'];
+                const opposites = { 'U': 'D', 'D': 'U', 'L': 'R', 'R': 'L', 'F': 'B', 'B': 'F' };
+                let res = [], last = '', secondLast = '';
+                for (let i = 0; i < 21; i++) {
+                    let chosen; do { chosen = faces[Math.floor(Math.random() * faces.length)]; } while (chosen === last || (chosen === secondLast && opposites[chosen] === last));
+                    secondLast = last; last = chosen; res.push(chosen + modifiers[Math.floor(Math.random() * modifiers.length)]);
+                }
+                return res.join(' ');
+            }
+            if (puzzle === '4x4' || puzzle === '5x5' || puzzle === '6x6' || puzzle === '7x7' || puzzle === '8x8' || puzzle === '9x9') {
+                let baseMoves = ['U', 'D', 'L', 'R', 'F', 'B', 'Uw', 'Rw'];
+                if (['5x5', '6x6', '7x7', '8x8', '9x9'].includes(puzzle)) baseMoves.push('Lw', 'Dw', 'Fw');
+                let res = [], last = '';
+                let length = puzzle === '4x4' ? 40 : puzzle === '5x5' ? 60 : 80;
+                for (let i = 0; i < length; i++) {
+                    let chosen; do { chosen = baseMoves[Math.floor(Math.random() * baseMoves.length)]; } while (chosen === last);
+                    last = chosen; res.push(chosen + modifiers[Math.floor(Math.random() * modifiers.length)]);
+                }
+                return res.join(' ');
+            }
+            if (puzzle === 'pyraminx') {
+                const moves = ['U', 'L', 'R', 'B', 'u', 'l', 'r', 'b'];
+                let res = [];
+                for (let i = 0; i < 11; i++) {
+                    res.push(moves[Math.floor(Math.random() * moves.length)] + (Math.random() > 0.5 ? "'" : ''));
+                }
+                return res.join(' ');
+            }
+            if (puzzle === 'megaminx') {
+                let res = [];
+                for (let i = 0; i < 7; i++) {
+                    res.push("R++ D--");
+                    res.push("R-- D++");
+                }
+                res.push("U'");
+                return res.join(' ');
+            }
+            if (puzzle === 'skewb') {
+                const moves = ['R', 'L', 'U', 'B'];
+                let res = [];
+                for (let i = 0; i < 10; i++) {
+                    res.push(moves[Math.floor(Math.random() * moves.length)] + (Math.random() > 0.5 ? "'" : ''));
+                }
+                return res.join(' ');
+            }
+            if (puzzle === 'square1') {
+                let res = [];
+                for (let i = 0; i < 12; i++) {
+                    let top = Math.floor(Math.random() * 13) - 6;
+                    let bottom = Math.floor(Math.random() * 13) - 6;
+                    res.push(`(${top}, ${bottom})`);
+                }
+                res.push('/');
+                return res.join(' ');
+            }
+            return generate3x3Scramble();
+        }
+
+        let isPlayingScramble = false, isPaused = false, playIndex = 0, playTimer = null;
+
+        function newScramble() {
+            stopScramblePlayback();
+            currentScramble = generateScramble(currentPuzzle);
+            scrambleText.textContent = currentScramble;
+            modalScrambleDisplay.textContent = currentScramble;
+            buildPuzzle3D();
+        }
+
+        function stopScramblePlayback() {
+            isPlayingScramble = false; isPaused = false; clearTimeout(playTimer);
+            iconPlay.textContent = '▶'; moveIndicator.classList.add('hidden');
+        }
+
+        document.querySelectorAll('.puzzle-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const puzzle = e.currentTarget.dataset.puzzle;
+                if (puzzle === currentPuzzle) return;
+                document.querySelectorAll('.puzzle-btn').forEach(b => b.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                currentPuzzle = puzzle;
+                puzzleBadge.textContent = puzzle.toUpperCase();
+                cubeModalTitle.textContent = `VISOR 3D • ${puzzle.toUpperCase()}`;
+                historyPuzzleLabel.textContent = `(${puzzle.toUpperCase()})`;
+                
+                // Ocultar o mostrar opción de visor 3D según si es cúbico estandar
+                const isCubic = ['2x2', '3x3', '4x4', '5x5', '6x6', '7x7', '8x8', '9x9'].includes(puzzle);
+                scrambleBar.style.pointerEvents = isCubic ? 'auto' : 'none';
+                view3dText.style.display = isCubic ? 'flex' : 'none';
+
+                selectedSolveIds.clear();
+                newScramble();
+                updateUI();
+            });
+        });
+
+        scrambleBar.addEventListener('click', () => {
+            const isCubic = ['2x2', '3x3', '4x4', '5x5', '6x6', '7x7', '8x8', '9x9'].includes(currentPuzzle);
+            if (!isCubic) return;
+            modalCube.classList.remove('hidden'); 
+            setTimeout(() => { onWindowResize3D(); }, 50); 
+        });
+
+        btnCloseCubeModal.addEventListener('click', () => { modalCube.classList.add('hidden'); stopScramblePlayback(); });
+        btnOpenHistory.addEventListener('click', () => { modalHistory.classList.remove('hidden'); });
+        btnCloseHistoryModal.addEventListener('click', () => { modalHistory.classList.add('hidden'); });
+        btnNextScramble.addEventListener('click', (e) => { e.stopPropagation(); newScramble(); });
+        btnPlayScramble.addEventListener('click', (e) => { e.stopPropagation(); toggleScrambleAnimation(); });
+
+        function toggleScrambleAnimation() {
+            if (isPlayingScramble) {
+                isPaused = !isPaused;
+                iconPlay.textContent = isPaused ? '▶' : '❚❚';
+            } else {
+                buildPuzzle3D(); isPlayingScramble = true; isPaused = false; playIndex = 0;
+                iconPlay.textContent = '❚❚'; stepPlayScramble();
+            }
+        }
+
+        function stepPlayScramble() {
+            if (!isPlayingScramble) return;
+            if (isPaused) { playTimer = setTimeout(stepPlayScramble, 100); return; }
+            const moves = currentScramble.split(' ');
+            if (playIndex >= moves.length) { stopScramblePlayback(); return; }
+            const currentMove = moves[playIndex];
+            moveIndicator.textContent = `Paso: ${currentMove} (${playIndex + 1}/${moves.length})`;
+            moveIndicator.classList.remove('hidden');
+            animateMove3D(currentMove, 400, () => {
+                playIndex++;
+                if (isPlayingScramble) playTimer = setTimeout(stepPlayScramble, Math.max(0, parseInt(selectSpeed.value, 10) - 400));
+            });
+        }
+
+        // --- SISTEMA DE CRONÓMETRO: 2 DEDOS (Móvil) / ESPACIO (PC) + 0.75 ---
+        const timerZone = document.getElementById('section-timer');
+
+        function triggerHoldStart() {
+            if (timerState === 'RUNNING') {
+                stopTimer();
+                return;
+            }
+
+            if (timerState === 'IDLE') {
+                timerState = 'HOLDING';
+                statusBadge.textContent = 'MANTÉN PRESIONADO...';
+                statusBadge.className = 'text-[11px] font-semibold tracking-wider uppercase text-amber-400 bg-slate-900 px-4 py-2 rounded-full border border-amber-500/30 mb-4 transition-colors';
+                timerDisplay.className = 'mono-font text-6xl sm:text-7xl font-black tracking-tight text-amber-400 my-2';
+
+                clearTimeout(holdTimeout);
+                holdTimeout = setTimeout(() => {
+                    if (timerState === 'HOLDING') {
+                        timerState = 'READY';
+                        statusBadge.textContent = '¡LISTO! SUELTA PARA EMPEZAR';
+                        statusBadge.className = 'text-[11px] font-semibold tracking-wider uppercase text-emerald-400 bg-slate-900 px-4 py-2 rounded-full border border-emerald-500/30 mb-4 transition-colors';
+                        timerDisplay.className = 'mono-font text-6xl sm:text-7xl font-black tracking-tight text-emerald-400 my-2';
+                    }
+                }, 750); 
+            }
+        }
+
+        function triggerHoldEnd() {
+            clearTimeout(holdTimeout);
+            timerDisplay.className = 'mono-font text-6xl sm:text-7xl font-black tracking-tight text-slate-100 my-2';
+
+            if (timerState === 'READY') {
+                startTimer();
+            } else if (timerState === 'HOLDING') {
+                timerState = 'IDLE';
+                statusBadge.textContent = 'MANTÉN 2 DEDOS (Móvil) O ESPACIO (PC) POR 0.75 Y SUELTA';
+                statusBadge.className = 'text-[11px] font-semibold tracking-wider uppercase text-slate-400 bg-slate-900 px-4 py-2 rounded-full border border-slate-800 mb-4 transition-colors';
+            }
+        }
+
+        timerZone.addEventListener('touchstart', (e) => {
+            if (e.target.closest('button')) return;
+            if (timerState === 'RUNNING') {
+                if (e.touches.length >= 2) {
+                    e.preventDefault();
+                    stopTimer();
+                }
+                return;
+            }
+            if (timerState === 'IDLE' && e.touches.length >= 2) {
+                e.preventDefault();
+                triggerHoldStart();
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchend', (e) => {
+            if (timerState === 'HOLDING' || timerState === 'READY') {
+                triggerHoldEnd();
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !e.repeat) {
+                e.preventDefault();
+                if (timerState === 'RUNNING') {
+                    stopTimer();
+                } else {
+                    triggerHoldStart();
+                }
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (timerState === 'HOLDING' || timerState === 'READY') {
+                    triggerHoldEnd();
+                }
+            }
+        });
+
+        function startTimer() {
+            timerState = 'RUNNING';
+            startTime = performance.now();
+            statusBadge.textContent = 'CRONOMETRANDO... (Usa 2 dedos o Espacio para detener)';
+            statusBadge.className = 'text-[11px] font-semibold tracking-wider uppercase text-rose-400 bg-slate-900 px-4 py-2 rounded-full border border-rose-500/30 mb-4 transition-colors';
+            
+            timerLoop = setInterval(() => { 
+                renderTime(performance.now() - startTime); 
+            }, 10);
+        }
+
+        function stopTimer() {
+            timerState = 'IDLE';
+            clearInterval(timerLoop);
+            const finalMs = performance.now() - startTime;
+            renderTime(finalMs);
+
+            statusBadge.textContent = 'MANTÉN 2 DEDOS (Móvil) O ESPACIO (PC) POR 0.75s Y SUELTA';
+            statusBadge.className = 'text-[11px] font-semibold tracking-wider uppercase text-slate-400 bg-slate-900 px-4 py-2 rounded-full border border-slate-800 mb-4 transition-colors';
+            
+            saveSolve(finalMs, currentScramble);
+            newScramble();
+        }
+
+        function renderTime(ms) {
+            const min = Math.floor(ms / 60000), sec = Math.floor((ms % 60000) / 1000), msec = Math.floor(ms % 1000);
+            timerDisplay.innerHTML = `${String(min).padStart(2, '0')}<span class="text-sky-400">:</span>${String(sec).padStart(2, '0')}<span class="text-sky-400">.</span>${String(msec).padStart(3, '0')}`;
+        }
+
+        function formatTimeStr(ms) {
+            if (!ms || isNaN(ms)) return '--';
+            const min = Math.floor(ms / 60000), sec = Math.floor((ms % 60000) / 1000), msec = Math.floor(ms % 1000);
+            return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}.${String(msec).padStart(3, '0')}`;
+        }
+
+        function saveSolve(ms, scramble) {
+            if (!solvesHistory[currentPuzzle]) solvesHistory[currentPuzzle] = [];
+            const newId = Date.now().toString();
+            solvesHistory[currentPuzzle].unshift({ id: newId, ms, formatted: formatTimeStr(ms), scramble, date: new Date().toLocaleDateString('es-ES') });
+            selectedSolveIds.add(newId);
+            saveToStorage();
+            updateUI();
+        }
+
+        window.deleteSolve = function(id) {
+            if (!solvesHistory[currentPuzzle]) return;
+            solvesHistory[currentPuzzle] = solvesHistory[currentPuzzle].filter(i => i.id !== id);
+            selectedSolveIds.delete(id);
+            saveToStorage();
+            updateUI();
+        };
+
+        window.toggleSelectSolve = function(id) {
+            if (selectedSolveIds.has(id)) selectedSolveIds.delete(id); else selectedSolveIds.add(id);
+            updateUI();
+        };
+
+        chkSelectAll.addEventListener('change', (e) => {
+            const list = solvesHistory[currentPuzzle] || [];
+            if (e.target.checked) list.forEach(i => selectedSolveIds.add(i.id)); else selectedSolveIds.clear();
+            updateUI();
+        });
+
+        btnClear.addEventListener('click', () => {
+            if (!solvesHistory[currentPuzzle]) return;
+            solvesHistory[currentPuzzle] = []; selectedSolveIds.clear(); saveToStorage(); updateUI();
+        });
+
+        function saveToStorage() { try { localStorage.setItem('crono_multi_solves', JSON.stringify(solvesHistory)); } catch (err) {} }
+        function loadFromStorage() {
+            try {
+                const data = localStorage.getItem('crono_multi_solves');
+                if (data) {
+                    solvesHistory = JSON.parse(data);
+                    (solvesHistory[currentPuzzle] || []).forEach(i => selectedSolveIds.add(i.id));
+                }
+            } catch (err) {}
+        }
+        function calculateMean(list) {
+            if (!list || list.length === 0) return null;
+            return list.reduce((acc, v) => acc + v.ms, 0) / list.length;
+        }
+
+        function updateUI() {
+            const list = solvesHistory[currentPuzzle] || [];
+            const validIds = new Set(list.map(i => i.id));
+            selectedSolveIds = new Set([...selectedSolveIds].filter(id => validIds.has(id)));
+
+            btnExportFull.disabled = selectedSolveIds.size === 0;
+            chkSelectAll.checked = list.length > 0 && selectedSolveIds.size === list.length;
+            countVal.textContent = list.length;
+
+            if (list.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                historyContainer.innerHTML = ''; historyContainer.appendChild(emptyMsg);
+                bestVal.textContent = '--'; worstVal.textContent = '--'; meanVal.textContent = '--';
+                mainBestVal.textContent = '--'; mainWorstVal.textContent = '--'; mainMeanVal.textContent = '--';
+                return;
+            }
+
+            emptyMsg.classList.add('hidden');
+            const times = list.map(i => i.ms);
+            const best = Math.min(...times), worst = Math.max(...times), mean = calculateMean(list);
+
+            bestVal.textContent = formatTimeStr(best);
+            worstVal.textContent = formatTimeStr(worst);
+            meanVal.textContent = formatTimeStr(mean);
+
+            mainBestVal.textContent = formatTimeStr(best);
+            mainWorstVal.textContent = formatTimeStr(worst);
+            mainMeanVal.textContent = formatTimeStr(mean);
+
+            let html = '';
+            list.forEach((item) => {
+                const isBest = item.ms === best && list.length > 1;
+                const isWorst = item.ms === worst && list.length > 1;
+                const isChecked = selectedSolveIds.has(item.id);
+                let timeColor = isBest ? 'text-emerald-400 font-extrabold' : isWorst ? 'text-rose-400 font-extrabold' : 'text-sky-400';
+                html += `
+                    <div class="flex items-center justify-between py-2 px-1 hover:bg-slate-800/40 rounded-xl transition-all gap-2 ${isChecked ? 'bg-slate-800/20' : ''}">
+                        <div class="flex items-center space-x-2.5 flex-grow min-w-0">
+                            <input type="checkbox" onchange="toggleSelectSolve('${item.id}')" ${isChecked ? 'checked' : ''} class="w-3.5 h-3.5 rounded border-slate-700 flex-shrink-0">
+                            <span class="mono-font ${timeColor} text-xs font-bold w-24 flex-shrink-0">${item.formatted}</span>
+                            <span class="text-[11px] text-slate-300 font-mono truncate">${item.scramble}</span>
+                        </div>
+                        <button onclick="deleteSolve('${item.id}')" class="px-2 py-1 text-slate-500 hover:text-rose-400 font-bold transition-colors rounded-lg hover:bg-slate-800 flex-shrink-0">✕</button>
+                    </div>
+                `;
+            });
+            historyContainer.innerHTML = html;
+        }
+
+        btnExportFull.addEventListener('click', () => {
+            const list = solvesHistory[currentPuzzle] || [];
+            const selectedList = list.filter(i => selectedSolveIds.has(i.id));
+            if (selectedList.length === 0) return;
+
+            const canvas = document.getElementById('canvas-export');
+            const ctx = canvas.getContext('2d');
+            const canvasWidth = 720;
+            let totalContentHeight = 150;
+            
+            ctx.font = '11px "JetBrains Mono", monospace';
+            const wrapTextLines = (text, maxWidth) => {
+                const words = text.split(' ');
+                let lines = [], currentLine = words[0];
+                for (let i = 1; i < words.length; i++) {
+                    if (ctx.measureText(currentLine + " " + words[i]).width < maxWidth) currentLine += " " + words[i];
+                    else { lines.push(currentLine); currentLine = words[i]; }
+                }
+                lines.push(currentLine); return lines;
+            };
+
+            const itemsWithLines = selectedList.map((item) => {
+                const lines = wrapTextLines(item.scramble, 480);
+                const itemHeight = Math.max(28, lines.length * 18 + 8);
+                totalContentHeight += itemHeight + 12;
+                return { item, lines, itemHeight };
+            });
+
+            canvas.width = canvasWidth;
+            canvas.height = totalContentHeight + 40;
+            ctx.fillStyle = '#070a12'; ctx.fillRect(0, 0, canvasWidth, canvas.height);
+            ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2; ctx.strokeRect(15, 15, canvasWidth - 30, canvas.height - 30);
+
+            ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 20px "Inter", sans-serif';
+            ctx.fillText(`REPORTE DE TIEMPOS • ${currentPuzzle.toUpperCase()}`, 35, 50);
+
+            const times = selectedList.map(i => i.ms);
+            const cardWidth = (canvasWidth - 100) / 3;
+            ctx.fillStyle = '#0f172a'; ctx.fillRect(35, 70, cardWidth, 52);
+            ctx.fillStyle = '#34d399'; ctx.font = 'bold 10px "Inter", sans-serif'; ctx.fillText('MEJOR TIEMPO', 45, 88);
+            ctx.font = 'bold 18px "JetBrains Mono", monospace'; ctx.fillText(formatTimeStr(Math.min(...times)), 45, 110);
+
+            ctx.fillStyle = '#0f172a'; ctx.fillRect(45 + cardWidth, 70, cardWidth, 52);
+            ctx.fillStyle = '#fb7185'; ctx.font = 'bold 10px "Inter", sans-serif'; ctx.fillText('PEOR TIEMPO', 55 + cardWidth, 88);
+            ctx.font = 'bold 18px "JetBrains Mono", monospace'; ctx.fillText(formatTimeStr(Math.max(...times)), 55 + cardWidth, 110);
+
+            ctx.fillStyle = '#0f172a'; ctx.fillRect(55 + cardWidth * 2, 70, cardWidth, 52);
+            ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 10px "Inter", sans-serif'; ctx.fillText('PROMEDIO SELECCIÓN', 65 + cardWidth * 2, 88);
+            ctx.font = 'bold 18px "JetBrains Mono", monospace'; ctx.fillText(formatTimeStr(calculateMean(selectedList)), 65 + cardWidth * 2, 110);
+
+            let y = 172;
+            itemsWithLines.forEach(({ item, lines, itemHeight }) => {
+                ctx.fillStyle = '#0f172a'; ctx.fillRect(30, y - 14, canvasWidth - 60, itemHeight);
+                ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 13px "JetBrains Mono", monospace'; ctx.fillText(item.formatted, 35, y + 2);
+                ctx.fillStyle = '#cbd5e1'; ctx.font = '11px "JetBrains Mono", monospace';
+                lines.forEach((line, idx) => ctx.fillText(line, 160, y + 2 + (idx * 16)));
+                y += itemHeight + 12;
+            });
+
+            modalTitle.textContent = `REPORTE SELECCIONADO (${selectedList.length}) - ${currentPuzzle.toUpperCase()}`;
+            const imgData = canvas.toDataURL('image/png');
+            modalImgPreview.src = imgData; btnDownloadLink.href = imgData;
+            exportModal.classList.remove('hidden');
+        });
+
+        btnShareReport.addEventListener('click', async () => {
+            const canvas = document.getElementById('canvas-export');
+            canvas.toBlob(async (blob) => {
+                if (!blob) return;
+                const file = new File([blob], `reporte-${currentPuzzle}.png`, { type: 'image/png' });
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try { await navigator.share({ title: `Reporte ${currentPuzzle.toUpperCase()}`, files: [file] }); } catch (err) {}
+                } else {
+                    const link = document.createElement('a'); link.href = canvas.toDataURL(); link.download = `reporte-${currentPuzzle}.png`; link.click();
+                }
+            });
+        });
+
+        btnCloseModal.addEventListener('click', () => { exportModal.classList.add('hidden'); });
+
+        window.addEventListener('load', () => {
+            init3D();
+            loadFromStorage();
+            newScramble();
+            updateUI();
+        });
+    </script>
+</body>
+</html>
