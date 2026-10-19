@@ -1,7 +1,6 @@
-archivo = proyectos/proyecto1.html {
-titulo = "Mi Primer Proyecto"
-descripcion = "Esta es la descripción detallada del proyecto en HTML."
+archivo = proyectos/speedcubing.html {
+titulo = "Speed Cubing"
+descripcion = "Proyecto hecho por mi y con la asistencia de IA Gemini pude hacer esta web que es bastante simple pero funcional, que consiste en un cronometro para armar un cubo rubik, contiene tanto para como desarmar el cubo, como historial de resultados y poder compartir/descargar tus resultados."
 fecha = "15/10/2026"
 descargable = true
-abrirHTML = true
 }
