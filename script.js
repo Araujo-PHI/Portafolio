@@ -68,7 +68,6 @@ function renderProjects(projects, container) {
 
     container.innerHTML = projects
         .map((project) => {
-            const inicial = project.titulo ? project.titulo.charAt(0).toUpperCase() : "P";
             const action = project.descargable
                 ? `<a class="project-download" href="${project.archivo}" download title="Descargar ${project.titulo}"><i class="fa-solid fa-download"></i> Descargar</a>`
                 : '<span class="project-disabled">No descargable</span>';
@@ -87,7 +86,6 @@ function renderProjects(projects, container) {
                             ${action}
                         </div>
                     </div>
-                    <div class="project-image-placeholder">${inicial}</div>
                 </article>
             `;
         })
